@@ -22,6 +22,16 @@ deviations = [abs(m-mu_coin) for m in running_means]
 
 print("Deviation at n = 10000", deviations[-1])
 
+# Step 3:
+last100_devs= deviations[-100:]
+count = 0
+
+for i in last100_devs:
+    if i > 0.001:
+        count = count + 1
+
+P_n = count/100
+print("P_n = ", P_n)
 
 
 
