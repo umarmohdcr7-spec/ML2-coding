@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 # Step 1:
 n = 10000
 
@@ -11,7 +12,7 @@ print("The total number of tosses generated:", len(X))
 running_means = []
 
 for i in range(1, n+1):
-    current_mean = np.mean(X[:n])
+    current_mean = np.mean(X[:i])
     running_means.append(current_mean)
 
 print("Running mean at n = 10000: ", running_means[-1] )    
@@ -33,7 +34,17 @@ for i in last100_devs:
 P_n = count/100
 print("P_n = ", P_n)
 
+plt.figure(figsize=(8,5))
+plt.plot(running_means, label="Running Mean $\\bar{X}_n$", color = "blue")
+plt.axhline(y=mu_coin, color = "red", linestyle="--", label = "True Mean = 0.5")
 
+plt.title("Running Sample Mean vs Number of tosses (n)")
+plt.xlabel("n(Number of Tosses)")
+plt.ylabel("Running Mean")
+plt.legend()
+plt.grid(True)
+
+plt.show()
 
 
 
