@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import os
-os.chdir(os.path.dirname(__file__))  # ensure saving in Week1 folder
+
 # Step 1:
 n = 10000
 
@@ -36,6 +35,8 @@ for i in last100_devs:
 P_n = count/100
 print("P_n = ", P_n)
 
+# Plot 1:
+
 plt.figure(figsize=(8,5))
 plt.plot(running_means, label="Running Mean $\\bar{X}_n$", color = "blue") # The weird part is used just to make the graph look pretty
 plt.axhline(y=mu_coin, color = "red", linestyle="--", label = "True Mean = 0.5") # The task asked to add a line at this point parallel to the x axis
@@ -45,13 +46,15 @@ plt.xlabel("n(Number of Tosses)")
 plt.ylabel("Running Mean")
 plt.legend()
 plt.grid(True)
-plt.savefig("plot1_mean.png", dpi = 300) # This will save the image
+plt.savefig("EXP1.1-plot1_mean.png", dpi = 300) # This will save the image
 
 plt.show() # This is used to show what we plotted
 
+# Plot 2:
+
 epsilon = 0.001
 plt.figure(figsize=(8,5))
-plt.plot(running_means, label="Absolute Deviation $\\delta_n$", color = "green") # The weird part is used just to make the graph look pretty
+plt.plot(deviations, label="Absolute Deviation $\\delta_n$", color="green") # The weird part is used just to make the graph look pretty
 plt.axhline(y=epsilon, color = "red", linestyle="--", label = "epsilon = 0.001") # The task asked to add a line at this point parallel to the x axis
 
 plt.title("Absolute Deviation $\\delta_n$ vs Number of tosses (n) log scale")
@@ -59,10 +62,40 @@ plt.xlabel("n(Number of Tosses)")
 plt.ylabel("Deviation (log scale)")
 plt.legend()
 plt.grid(True, which = "both")
-plt.savefig("plot2_deviations.png", dpi = 300)
+plt.savefig("EXP1.1-plot2_deviations.png", dpi = 300)
 
 plt.show()
-print("Current working directory:", os.getcwd())
 
 
 
+from collections import deque   # required for efficient moving window
+
+window_size = 100
+epsilon = 0.001
+sigma = 0.001   # horizontal reference line for the plot
+
+Pn_values = []                  # store P_n values
+window = deque(maxlen=window_size)   # sliding window for deviations
+
+# Compute P_n for every n starting from n = 100
+for delta in deviations:
+    window.append(delta)
+
+    if len(window) == window_size:
+        count_exceed = sum(d > epsilon for d in window)   # count deviations > epsilon
+        Pn = count_exceed / window_size
+        Pn_values.append(Pn)
+
+# ---- Plot 3 ----
+plt.figure(figsize=(8,5))
+plt.plot(Pn_values, label="$P_n$ (empirical probability)", color="purple")
+plt.axhline(y=sigma, color="red", linestyle="--", label="σ = 0.001")
+
+plt.title("Evolution of Empirical Probability $P_n$ vs n")
+plt.xlabel("n (starting from 100)")
+plt.ylabel("$P_n$")
+plt.legend()
+plt.grid(True)
+plt.savefig("EXP1.1-plot3_Pn.png", dpi=300)
+
+plt.show()
